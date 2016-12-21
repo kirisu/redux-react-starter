@@ -13,10 +13,10 @@ global.createStoreFrom = (actions) => {
   return store
 }
 
-global.reduceFrom = (reducer, actions) => {
+global.createStateFrom = (reducer, actions) => {
   var state = reducer(undefined, { type: 'NO_SUCH_ACTION' })
+  deepFreeze(state)
   for (var action of actions)
-    deepFreeze(state)
     state = reducer(state, action)
   return state
 }
