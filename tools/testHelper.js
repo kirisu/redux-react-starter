@@ -6,18 +6,17 @@ import rootReducer from '../src/reducers'
 
 global.expect = expect
 
-global.createStateFrom = (actions) => {
+global.createStoreFrom = (actions) => {
   const store = createStore(rootReducer, undefined, applyMiddleware(thunk))
   for (var action of actions)
     store.dispatch(action)
-  return store.getState()
+  return store
 }
 
 global.reduceFrom = (reducer, actions) => {
   var state = reducer(undefined, { type: 'NO_SUCH_ACTION' })
-  for (var action of actions) {
+  for (var action of actions)
     deepFreeze(state)
     state = reducer(state, action)
-  }
   return state
 }
