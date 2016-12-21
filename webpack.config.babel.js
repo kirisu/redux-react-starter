@@ -6,22 +6,38 @@ import DependencyInjectionPlugin from 'inject-webpack-plugin'
 import autoprefixer from 'autoprefixer'
 import cssnano from 'cssnano'
 
-import config from './config'
+import pkg from './package.json'
 
-const { __DEV__, __PROD__ } = config.globals
+const env = process.env.NODE_ENV || 'development'
+const globals = {
+  'process.env.NODE_ENV': JSON.stringify(env),
+  '__DEV__': env === 'development',
+  '__PROD__': env === 'production',
+  '__TEST__': env === 'test',
+}
+const { __DEV__, __PROD__, __TEST__ } = globals
 
-const MAIN = 'index.js'
-const APP_ENTRY_PATHS = [MAIN]
+const devtool = __DEV__ ? 'eval-source-map' : null
+const hashtype = __DEV__ ? 'hash' : 'chunkhash'
+const publicPath = '/'
+const stats = {
+  colors: true,
+  hash: false,
+  timings: true,
+  chunks: __DEV__ ? false : true,
+  chunkModules: __DEV__ ? false : true,
+  modules: false
+}
 
 let plugins = [
-  new webpack.DefinePlugin(config.globals),
+  new webpack.DefinePlugin(globals),
   new HtmlPlugin({
     template: 'index.html',
     hash: false,
     filename: 'index.html',
     inject: true
   }),
-  new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor-[' + config.compiler_hashType + '].js')
+  new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor-[' + hashtype + '].js')
 ]
 
 if (__DEV__) {
@@ -34,7 +50,7 @@ if (__DEV__) {
   )
 } else if (__PROD__) {
   plugins.push(
-    new ExtractTextPlugin('[name]-[' + config.compiler_hashType + '].css'),
+    new ExtractTextPlugin('[name]-[' + hashtype + '].css'),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
@@ -57,7 +73,7 @@ if (__DEV__) {
   loaders.push({
     test: /\.(js|jsx)?$/,
     exclude: /node_modules/,
-    loader: 'react-hot!babel!eslint'
+    loader: 'react-hot!babel'
   }, {
     test: /\.scss?$/,
     loader: 'style!css?modules&localIdentName=[local][hash:base64:5]&sourceMap!sass?sourceMap'
@@ -80,16 +96,16 @@ if (__DEV__) {
 }
 
 export default {
-  devtool: config.compiler_devtool,
+  devtool: devtool,
   context: path.resolve(__dirname, 'src'),
   entry: {
-    app: APP_ENTRY_PATHS,
-    vendor: config.compiler_vendor
+    app: ['index.js'],
+    vendor: Object.keys(pkg.dependencies)
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name]-[' + config.compiler_hashType + '].js',
-    publicPath: config.compiler_publicPath
+    filename: '[name]-[' + hashtype + '].js',
+    publicPath: publicPath
   },
   resolve: {
     root: path.resolve(__dirname, 'src'),
@@ -99,12 +115,12 @@ export default {
   module: {
     loaders: loaders
   },
-  stats: config.compiler_stats,
+  stats: stats,
   devServer: {
-    publicPath: config.compiler_publicPath,
+    publicPath: publicPath,
     hot: true,
     historyApiFallback: true,
-    stats: config.compiler_stats,
+    stats: stats,
     host: '0.0.0.0',
     port: '4000'
   },

@@ -1,8 +1,8 @@
 {
-  "presets": ["es2015", "react"],
+  "presets": ["latest", "stage-0", "react"],
   "env": {
     "production": {
-      "presets": ["es2015", "react", "react-optimize"]
+      "presets": ["latest", "stage-0", "react", "react-optimize"]
     }
   }
 }
