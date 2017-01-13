@@ -1,3 +1,7 @@
 import configureStore from './store/configure'
+import rootSaga from './sagas'
 
-export default configureStore()
+const store = configureStore()
+store.runSaga(rootSaga)
+
+export default store
