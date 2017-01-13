@@ -99,7 +99,7 @@ export default {
   devtool: devtool,
   context: path.resolve(__dirname, 'src'),
   entry: {
-    app: ['index.js'],
+    app: ['babel-polyfill', 'index.js'],
     vendor: Object.keys(pkg.dependencies)
   },
   output: {

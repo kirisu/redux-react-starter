@@ -5,6 +5,7 @@ import store from './store'
 
 import Root from './domains/Root'
 
-const app = document.createElement('div')
-render(React.createElement(Root, { store }), app)
-document.body.appendChild(app)
+render(
+  React.createElement(Root, { store }),
+  document.body.appendChild(document.createElement('div'))
+)
