@@ -10,7 +10,8 @@ type Props = {
   store: Object
 };
 
-class Root extends Component<void, Props, void> {
+class Root extends Component {
+  props: Props;
   render() {
     const { store } = this.props;
     return (
