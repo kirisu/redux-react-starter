@@ -1,13 +1,13 @@
 import { expect } from 'chai'
 import deepFreeze from 'deep-freeze'
 import { createStore, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
+import createSagaMiddleware from 'redux-saga'
 import rootReducer from '../src/reducers'
 
 global.expect = expect
 
 global.createStoreFrom = (actions) => {
-  const store = createStore(rootReducer, undefined, applyMiddleware(thunk))
+  const store = createStore(rootReducer, undefined, applyMiddleware(createSagaMiddleware()))
   for (var action of actions)
     store.dispatch(action)
   return store

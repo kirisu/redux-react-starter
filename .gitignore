@@ -75,7 +75,3 @@ jspm_packages
 
 .babel.json
 dist
-
-docker
-.dockerignore
-Dockerfile

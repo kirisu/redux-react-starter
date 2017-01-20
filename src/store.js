@@ -1,3 +1,5 @@
+/* @flow */
+
 import configureStore from './store/configure'
 import rootSaga from './sagas'
 
