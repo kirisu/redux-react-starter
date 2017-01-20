@@ -2,5 +2,5 @@
 docker run --rm -it \
 -v $(PWD):/home/app \
 -v /home/app/node_modules \
-gppw \
+$1 \
 npm test

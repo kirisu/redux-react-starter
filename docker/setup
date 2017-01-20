@@ -8,13 +8,13 @@ if [ ! -f yarn.lock ]; then
   touch yarn.lock
 fi;
 
-docker build -t gppw .;
+docker build -t $1 .;
 
-docker run --rm --entrypoint cat gppw /tmp/yarn.lock > /tmp/yarn.lock;
+docker run --rm --entrypoint cat $1 /tmp/yarn.lock > /tmp/yarn.lock;
 
 if ! diff -q yarn.lock /tmp/yarn.lock > /dev/null  2>&1; then
   echo "Saving Yarn cache"
-  docker run --rm --entrypoint tar gppw czf - .yarn-cache > .yarn-cache.tgz
+  docker run --rm --entrypoint tar $1 czf - .yarn-cache > .yarn-cache.tgz
   echo "Saving yarn.lock"
   cp /tmp/yarn.lock yarn.lock
 fi;

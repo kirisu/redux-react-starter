@@ -3,5 +3,5 @@ docker run --rm -it \
 -v $(PWD):/home/app \
 -v /home/app/node_modules \
 -p 4000:4000 \
-gppw \
+$1 \
 npm start
