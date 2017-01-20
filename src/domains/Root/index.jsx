@@ -5,7 +5,11 @@ import { Provider } from 'react-redux'
 
 import App from '../App'
 
-const Root = ({ store }) => {
+type Props = {
+  store: Object
+}
+
+const Root = ({ store } : Props) => {
   return (
     <div>
       <Provider store={store}>
@@ -13,10 +17,6 @@ const Root = ({ store }) => {
       </Provider>
     </div>
   );
-}
-
-Root.propTypes = {
-  store: PropTypes.object,
 }
 
 export default Root

@@ -6,7 +6,11 @@ import { Provider } from 'react-redux'
 import DevTools from './components/DevTools'
 import App from '../App'
 
-class Root extends Component {
+type Props = {
+  store: Object,
+}
+
+class Root extends Component<void, Props, void> {
   render() {
     const { store } = this.props
     return (
@@ -18,10 +22,6 @@ class Root extends Component {
       </div>
     )
   }
-}
-
-Root.propTypes = {
-  store: PropTypes.object,
 }
 
 export default Root

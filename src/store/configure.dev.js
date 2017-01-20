@@ -7,7 +7,7 @@ import rootReducer from '../reducers'
 
 import DevTools from '../domains/Root/components/DevTools'
 
-export default function configureStore(initialState = {}) {
+export default function configureStore(initialState : Object = {}) {
   const sagaMiddleware = createSagaMiddleware()
   return {
     ...createStore(rootReducer, initialState, compose(applyMiddleware(sagaMiddleware), DevTools.instrument())),
