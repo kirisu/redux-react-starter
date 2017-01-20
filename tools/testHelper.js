@@ -1,3 +1,5 @@
+/* @flow */
+
 import { expect } from 'chai'
 import deepFreeze from 'deep-freeze'
 import { createStore, applyMiddleware } from 'redux'
