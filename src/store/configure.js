@@ -1,14 +1,14 @@
 /* @flow */
 
-import { createStore, compose, applyMiddleware } from 'redux'
-import createSagaMiddleware from 'redux-saga'
+import { createStore, compose, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 
-import rootReducer from '../reducers'
+import rootReducer from '../reducers';
 
 export default function configureStore(initialState : Object = {}) {
-  const sagaMiddleware = createSagaMiddleware()
+  const sagaMiddleware = createSagaMiddleware();
   return {
     ...createStore(rootReducer, initialState, compose(applyMiddleware(sagaMiddleware))),
     runSaga: sagaMiddleware.run
-  }
+  };
 }

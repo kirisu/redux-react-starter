@@ -1,9 +1,9 @@
 /* @flow */
 
-import configureStore from './store/configure'
-import rootSaga from './sagas'
+import configureStore from './store/configure';
+import rootSaga from './sagas';
 
-const store = configureStore()
-store.runSaga(rootSaga)
+const store = configureStore();
+store.runSaga(rootSaga);
 
-export default store
+export default store;
