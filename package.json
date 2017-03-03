@@ -53,6 +53,8 @@
     "deep-freeze": "^0.0.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "flow-bin": "^0.38.0",
+    "handlebars": "^4.0.6",
+    "handlebars-loader": "^1.4.0",
     "html-webpack-plugin": "^2.26.0",
     "inject-webpack-plugin": "^0.3.0",
     "mocha": "^3.2.0",

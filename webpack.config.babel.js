@@ -34,7 +34,7 @@ const stats = {
 let plugins = [
   new webpack.DefinePlugin(globals),
   new HtmlPlugin({
-    template: 'index.html',
+    template: 'index.hbs',
     hash: false,
     filename: 'index.html',
     inject: true
@@ -69,7 +69,12 @@ if (__DEV__) {
   )
 }
 
-let loaders = [];
+let loaders = [
+  {
+    test: /\.hbs$/,
+    loader: "handlebars"
+  }
+];
 
 if (__DEV__) {
   loaders.push({
