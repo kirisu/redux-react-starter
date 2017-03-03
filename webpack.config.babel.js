@@ -3,7 +3,6 @@ import webpack from 'webpack'
 import HtmlPlugin from 'html-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import DependencyInjectionPlugin from 'inject-webpack-plugin'
-import cssnano from 'cssnano'
 import cssnext from 'postcss-cssnext'
 import postcssUrl from 'postcss-url';
 import postcssImport from 'postcss-import';
