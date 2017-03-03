@@ -5,8 +5,8 @@ import createSagaMiddleware from 'redux-saga';
 
 import rootReducer from '../reducers';
 
-export default (initialState : Object = {}) : Object => {
-  const sagaMiddleware : Function = createSagaMiddleware();
+export default (initialState : Object = {}) => {
+  const sagaMiddleware = createSagaMiddleware();
   return {
     ...createStore(rootReducer, initialState, compose(applyMiddleware(sagaMiddleware))),
     runSaga: sagaMiddleware.run
