@@ -1,6 +1,6 @@
 import path from 'path'
 import webpack from 'webpack'
-import HtmlPlugin from 'html-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import DependencyInjectionPlugin from 'inject-webpack-plugin'
 import cssnext from 'postcss-cssnext'
@@ -19,7 +19,7 @@ const globals = {
 }
 const { __DEV__, __PROD__ } = globals
 
-const devtool = __DEV__ ? 'eval-source-map' : null
+const devtool = __DEV__ ? 'eval-source-map' : false
 const hashtype = __DEV__ ? 'hash' : 'chunkhash'
 const publicPath = '/'
 const stats = {
@@ -33,13 +33,30 @@ const stats = {
 
 let plugins = [
   new webpack.DefinePlugin(globals),
-  new HtmlPlugin({
+  new HtmlWebpackPlugin({
     template: 'index.hbs',
     hash: false,
     filename: 'index.html',
     inject: true
   }),
-  new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor-[' + hashtype + '].js')
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor',
+    filename: 'vendor-[' + hashtype + '].js'
+  }),
+  new webpack.LoaderOptionsPlugin({
+    minimize: true,
+    debug: false,
+    options: {
+      context: __dirname
+    },
+    postcss: [
+      cssnext,
+      postcssBrowserReporter,
+      postcssReporter,
+      postcssUrl,
+      postcssImport
+    ]
+  })
 ]
 
 if (__DEV__) {
@@ -52,9 +69,8 @@ if (__DEV__) {
   )
 } else if (__PROD__) {
   plugins.push(
-    new ExtractTextPlugin('[name]-[' + hashtype + '].css'),
+    new ExtractTextPlugin('[name].css'),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
@@ -72,7 +88,7 @@ if (__DEV__) {
 let loaders = [
   {
     test: /\.hbs$/,
-    loader: "handlebars"
+    use: 'handlebars-loader'
   }
 ];
 
@@ -80,25 +96,48 @@ if (__DEV__) {
   loaders.push({
     test: /\.(js|jsx)?$/,
     exclude: /node_modules/,
-    loader: 'react-hot!babel'
+    use: [
+      'react-hot-loader',
+      'babel-loader'
+    ]
   }, {
     test: /\.pcss?$/,
-    loader: 'style!css?modules!sourceMap!postcss'
+    use: [
+      'style-loader',
+      'css?modules-loader&sourceMap',
+      'postcss-loader'
+    ]
   }, {
     test: /\.css?$/,
-    loader: 'style!css'
+    use: [
+      'style-loader',
+      'css-loader'
+    ]
   })
 } else if (__PROD__) {
   loaders.push({
     test: /\.(js|jsx)?$/,
     exclude: /node_modules/,
-    loader: 'babel'
+    use: [
+      'babel-loader'
+    ]
   }, {
     test: /\.pcss$/,
-    loader: ExtractTextPlugin.extract('style', 'css?modules!postcss')
+    use: ExtractTextPlugin.extract({
+      fallback: 'style-loader',
+      use: [
+        'css-loader?modules',
+        'postcss-loader'
+      ]
+    })
   }, {
     test: /\.css?$/,
-    loader: ExtractTextPlugin.extract('style', 'css')
+    use: ExtractTextPlugin.extract({
+      fallback: 'style-loader',
+      use: [
+        'css-loader'
+      ]
+    })
   })
 }
 
@@ -115,8 +154,11 @@ export default {
     publicPath: publicPath
   },
   resolve: {
-    root: path.resolve(__dirname, 'src'),
-    extensions: ['', '.js', '.jsx']
+    modules: [
+      path.resolve(__dirname, 'src'),
+      path.resolve(__dirname, 'node_modules')
+    ],
+    extensions: ['.js', '.jsx']
   },
   plugins: plugins,
   module: {
@@ -130,12 +172,5 @@ export default {
     stats: stats,
     host: '0.0.0.0',
     port: 4000
-  },
-  postcss: [
-    cssnext,
-    postcssBrowserReporter,
-    postcssReporter,
-    postcssUrl,
-    postcssImport
-  ]
+  }
 };
