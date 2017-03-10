@@ -17,5 +17,13 @@ export default {
       path: path.join(__dirname, 'dist', '[name]-manifest.json'),
       name: '[name]_[hash]_lib'
     })
-  ]
+  ],
+  module: {
+    loaders: [
+      {
+        test: /\.css?$/,
+        use: ['style-loader', 'css-loader']
+      }
+    ]
+  }
 };
