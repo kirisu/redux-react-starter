@@ -7,10 +7,14 @@ import rootReducer from '../reducers';
 
 import DevTools from '../domains/Root/components/DevTools';
 
-export default (initialState : Object = {}) => {
+export default initialState => {
   const sagaMiddleware = createSagaMiddleware();
   return {
-    ...createStore(rootReducer, initialState, compose(applyMiddleware(sagaMiddleware), DevTools.instrument())),
+    ...createStore(
+      rootReducer,
+      initialState,
+      compose(applyMiddleware(sagaMiddleware), DevTools.instrument())
+    ),
     runSaga: sagaMiddleware.run
   };
-}
+};

@@ -1,27 +1,29 @@
-import path from 'path'
-import webpack from 'webpack'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import DependencyInjectionPlugin from 'inject-webpack-plugin'
-import cssnext from 'postcss-cssnext'
+import path from 'path';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import DependencyInjectionPlugin from 'inject-webpack-plugin';
+import cssnext from 'postcss-cssnext';
 import postcssUrl from 'postcss-url';
 import postcssImport from 'postcss-import';
 import postcssReporter from 'postcss-reporter';
 import postcssBrowserReporter from 'postcss-browser-reporter';
 
-import pkg from './package.json'
+import manifest from './dist/vendor-manifest.json';
 
-const env = process.env.NODE_ENV || 'development'
+import pkg from './package.json';
+
+const env = process.env.NODE_ENV || 'development';
 const globals = {
   'process.env.NODE_ENV': JSON.stringify(env),
-  '__DEV__': env === 'development',
-  '__PROD__': env === 'production'
-}
-const { __DEV__, __PROD__ } = globals
+  __DEV__: env === 'development',
+  __PROD__: env === 'production'
+};
+const { __DEV__, __PROD__ } = globals;
 
-const devtool = __DEV__ ? 'eval-source-map' : false
-const hashtype = __DEV__ ? 'hash' : 'chunkhash'
-const publicPath = '/'
+const devtool = __DEV__ ? 'eval-source-map' : false;
+const hashtype = __DEV__ ? 'hash' : 'chunkhash';
+const publicPath = '/';
 const stats = {
   colors: true,
   hash: false,
@@ -29,19 +31,19 @@ const stats = {
   chunks: __DEV__ ? false : true,
   chunkModules: __DEV__ ? false : true,
   modules: false
-}
+};
 
 let plugins = [
   new webpack.DefinePlugin(globals),
+  new webpack.DllReferencePlugin({
+    context: path.resolve(__dirname, 'dist'),
+    manifest: manifest
+  }),
   new HtmlWebpackPlugin({
     template: 'index.hbs',
     hash: false,
     filename: 'index.html',
     inject: true
-  }),
-  new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    filename: 'vendor-[' + hashtype + '].js'
   }),
   new webpack.LoaderOptionsPlugin({
     minimize: true,
@@ -57,7 +59,7 @@ let plugins = [
       postcssImport
     ]
   })
-]
+];
 
 if (__DEV__) {
   plugins.push(
@@ -66,7 +68,7 @@ if (__DEV__) {
       'store/configure': 'store/configure.dev',
       'domains/Root': 'domains/Root/index.dev'
     })
-  )
+  );
 } else if (__PROD__) {
   plugins.push(
     new ExtractTextPlugin('[name].css'),
@@ -82,7 +84,7 @@ if (__DEV__) {
       },
       comments: false
     })
-  )
+  );
 }
 
 let loaders = [
@@ -93,60 +95,50 @@ let loaders = [
 ];
 
 if (__DEV__) {
-  loaders.push({
-    test: /\.(js|jsx)?$/,
-    exclude: /node_modules/,
-    use: [
-      'react-hot-loader',
-      'babel-loader'
-    ]
-  }, {
-    test: /\.pcss?$/,
-    use: [
-      'style-loader',
-      'css?modules-loader&sourceMap',
-      'postcss-loader'
-    ]
-  }, {
-    test: /\.css?$/,
-    use: [
-      'style-loader',
-      'css-loader'
-    ]
-  })
+  loaders.push(
+    {
+      test: /\.(js|jsx)?$/,
+      exclude: /node_modules/,
+      use: ['react-hot-loader', 'babel-loader']
+    },
+    {
+      test: /\.pcss?$/,
+      use: ['style-loader', 'css-loader?modules&sourceMap', 'postcss-loader']
+    },
+    {
+      test: /\.css?$/,
+      use: ['style-loader', 'css-loader']
+    }
+  );
 } else if (__PROD__) {
-  loaders.push({
-    test: /\.(js|jsx)?$/,
-    exclude: /node_modules/,
-    use: [
-      'babel-loader'
-    ]
-  }, {
-    test: /\.pcss$/,
-    use: ExtractTextPlugin.extract({
-      fallback: 'style-loader',
-      use: [
-        'css-loader?modules',
-        'postcss-loader'
-      ]
-    })
-  }, {
-    test: /\.css?$/,
-    use: ExtractTextPlugin.extract({
-      fallback: 'style-loader',
-      use: [
-        'css-loader'
-      ]
-    })
-  })
+  loaders.push(
+    {
+      test: /\.(js|jsx)?$/,
+      exclude: /node_modules/,
+      use: ['babel-loader']
+    },
+    {
+      test: /\.pcss$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader?modules', 'postcss-loader']
+      })
+    },
+    {
+      test: /\.css?$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: ['css-loader']
+      })
+    }
+  );
 }
 
 export default {
   devtool: devtool,
   context: path.resolve(__dirname, 'src'),
   entry: {
-    app: ['babel-polyfill', 'index.js'],
-    vendor: Object.keys(pkg.dependencies)
+    app: ['babel-polyfill', 'index.js']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

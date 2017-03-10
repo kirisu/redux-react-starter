@@ -1,5 +1,5 @@
 /* @flow */
 
-export default function*() : Generator<> {
+export default function*() {
   yield [];
 }

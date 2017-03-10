@@ -1,6 +1,6 @@
 /* @flow */
 
-import { PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 
 import App from '../App';
@@ -9,7 +9,7 @@ type Props = {
   store: Object
 };
 
-const Root = ({ store } : Props) => {
+const Root = ({ store }) => {
   return (
     <div>
       <Provider store={store}>
@@ -17,6 +17,6 @@ const Root = ({ store } : Props) => {
       </Provider>
     </div>
   );
-}
+};
 
 export default Root;
