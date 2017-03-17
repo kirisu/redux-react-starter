@@ -51,13 +51,15 @@ let plugins = [
     options: {
       context: __dirname
     },
-    postcss: [
-      cssnext,
-      postcssBrowserReporter,
-      postcssReporter,
-      postcssUrl,
-      postcssImport
-    ]
+    postcss: __DEV__
+      ? [
+          cssnext,
+          postcssBrowserReporter,
+          postcssReporter,
+          postcssUrl,
+          postcssImport
+        ]
+      : [cssnext, postcssReporter, postcssUrl, postcssImport]
   })
 ];
 
