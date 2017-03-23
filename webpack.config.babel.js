@@ -17,7 +17,12 @@ const env = process.env.NODE_ENV || 'development';
 const globals = {
   'process.env.NODE_ENV': JSON.stringify(env),
   __DEV__: env === 'development',
-  __PROD__: env === 'production'
+  __PROD__: env === 'production',
+  SERVER_PORT: '',
+  CLIENT_PORT: '',
+  PUBLIC_PATH: '',
+  PUBLIC_DIR: '',
+  ASSETS_MANIFEST: ''
 };
 const { __DEV__, __PROD__ } = globals;
 
@@ -136,35 +141,41 @@ if (__DEV__) {
   );
 }
 
-export default {
-  devtool: devtool,
-  context: path.resolve(__dirname, 'src'),
-  entry: {
-    app: ['babel-polyfill', 'index.js']
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name]-[' + hashtype + '].js',
-    publicPath: publicPath
-  },
-  resolve: {
-    modules: [
-      path.resolve(__dirname, 'src'),
-      path.resolve(__dirname, 'node_modules')
-    ],
-    extensions: ['.js', '.jsx']
-  },
-  plugins: plugins,
-  module: {
-    loaders: loaders
-  },
-  stats: stats,
-  devServer: {
-    publicPath: publicPath,
-    hot: true,
-    historyApiFallback: true,
+export default function(options) {
+  return {
+    node: {
+      __dirname: true,
+      __filename: true
+    },
+    devtool: devtool,
+    context: path.resolve(__dirname, 'src'),
+    resolve: {
+      extensions: ['.js', '.jsx'],
+      modules: [
+        path.resolve(__dirname, 'src'),
+        path.resolve(__dirname, 'node_modules')
+      ]
+    },
+    entry: {
+      app: ['babel-polyfill', 'index.js']
+    },
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: '[name]-[' + hashtype + '].js',
+      publicPath: publicPath
+    },
+    plugins: plugins,
+    module: {
+      loaders: loaders
+    },
     stats: stats,
-    host: '0.0.0.0',
-    port: 4000
-  }
-};
+    devServer: {
+      publicPath: publicPath,
+      hot: true,
+      historyApiFallback: true,
+      stats: stats,
+      host: '0.0.0.0',
+      port: 4000
+    }
+  };
+}
