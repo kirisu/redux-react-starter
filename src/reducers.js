@@ -1,5 +1,9 @@
-/* @flow */
+// @flow
 
 import { combineReducers } from 'redux';
 
-export default combineReducers({});
+const reducers = {};
+
+export type Reducers = typeof reducers;
+
+export default combineReducers(reducers);

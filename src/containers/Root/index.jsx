@@ -1,17 +1,18 @@
-/* @flow */
+// @flow
+import type { Store } from '../../types/Store';
 
 import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 
-import App from '../App';
+import App from '../../components/App';
 
 type Props = {
-  store: Object
+  store: Store
 };
 
-const Root = ({ store }) => {
+const Root = ({ store }: Props) => {
   return (
-    <div>
+    <div key="root">
       <Provider store={store}>
         <App />
       </Provider>

@@ -1,13 +1,14 @@
-/* @flow */
+// @flow
+import type { Store } from '../../types/Store';
 
 import React, { Component, PropTypes } from 'react';
 import { Provider } from 'react-redux';
 
 import DevTools from './components/DevTools';
-import App from '../App';
+import App from '../../components/App';
 
 type Props = {
-  store: Object
+  store: Store
 };
 
 class Root extends Component {

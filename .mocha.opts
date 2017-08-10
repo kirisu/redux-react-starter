@@ -1,3 +1,0 @@
---compilers js:babel-core/register
---require tools/testHelper.js
---recursive src/**/*Test.js

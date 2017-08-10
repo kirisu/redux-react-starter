@@ -1,9 +1,8 @@
-/* @flow */
+// @flow
+import type { Store } from './types/Store';
 
 import configureStore from './store/configure';
-import rootSaga from './sagas';
 
-const store = configureStore();
-store.runSaga(rootSaga);
+const store: Store = configureStore();
 
 export default store;

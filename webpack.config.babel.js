@@ -1,27 +1,22 @@
 import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import DependencyInjectionPlugin from 'inject-webpack-plugin';
-import cssnext from 'postcss-cssnext';
-import postcssUrl from 'postcss-url';
-import postcssImport from 'postcss-import';
-import postcssReporter from 'postcss-reporter';
-import postcssBrowserReporter from 'postcss-browser-reporter';
 
-import manifest from './dist/vendor-manifest.json';
+import vendorManifest from './dist/vendor-manifest.json';
 
 import pkg from './package.json';
+
+const CLIENT_HOST = '0.0.0.0';
+const CLIENT_PORT = 4000;
 
 const env = process.env.NODE_ENV || 'development';
 const globals = {
   'process.env.NODE_ENV': JSON.stringify(env),
   __DEV__: env === 'development',
   __PROD__: env === 'production',
-  SERVER_PORT: '',
-  CLIENT_PORT: '',
-  PUBLIC_PATH: '',
-  PUBLIC_DIR: '',
+  CLIENT_HOST: CLIENT_HOST,
+  CLIENT_PORT: CLIENT_PORT,
   ASSETS_MANIFEST: ''
 };
 const { __DEV__, __PROD__ } = globals;
@@ -42,29 +37,13 @@ let plugins = [
   new webpack.DefinePlugin(globals),
   new webpack.DllReferencePlugin({
     context: path.resolve(__dirname, 'dist'),
-    manifest: manifest
+    manifest: vendorManifest
   }),
   new HtmlWebpackPlugin({
-    template: 'index.hbs',
+    template: 'index.html',
     hash: false,
     filename: 'index.html',
     inject: true
-  }),
-  new webpack.LoaderOptionsPlugin({
-    minimize: true,
-    debug: false,
-    options: {
-      context: __dirname
-    },
-    postcss: __DEV__
-      ? [
-          cssnext,
-          postcssBrowserReporter,
-          postcssReporter,
-          postcssUrl,
-          postcssImport
-        ]
-      : [cssnext, postcssReporter, postcssUrl, postcssImport]
   })
 ];
 
@@ -73,7 +52,7 @@ if (__DEV__) {
     new webpack.HotModuleReplacementPlugin(),
     new DependencyInjectionPlugin({
       'store/configure': 'store/configure.dev',
-      'domains/Root': 'domains/Root/index.dev'
+      'containers/Root': 'containers/Root/index.dev'
     })
   );
 } else if (__PROD__) {
@@ -94,51 +73,20 @@ if (__DEV__) {
   );
 }
 
-let loaders = [
-  {
-    test: /\.hbs$/,
-    use: 'handlebars-loader'
-  }
-];
+let loaders = [];
 
 if (__DEV__) {
-  loaders.push(
-    {
-      test: /\.(js|jsx)?$/,
-      exclude: /node_modules/,
-      use: ['react-hot-loader', 'babel-loader']
-    },
-    {
-      test: /\.pcss?$/,
-      use: ['style-loader', 'css-loader?modules&sourceMap', 'postcss-loader']
-    },
-    {
-      test: /\.css?$/,
-      use: ['style-loader', 'css-loader']
-    }
-  );
+  loaders.push({
+    test: /\.(js|jsx)?$/,
+    exclude: /node_modules/,
+    use: ['react-hot-loader', 'babel-loader']
+  });
 } else if (__PROD__) {
-  loaders.push(
-    {
-      test: /\.(js|jsx)?$/,
-      exclude: /node_modules/,
-      use: ['babel-loader']
-    },
-    {
-      test: /\.pcss$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: ['css-loader?modules', 'postcss-loader']
-      })
-    },
-    {
-      test: /\.css?$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: ['css-loader']
-      })
-    }
-  );
+  loaders.push({
+    test: /\.(js|jsx)?$/,
+    exclude: /node_modules/,
+    use: ['babel-loader']
+  });
 }
 
 export default function(options) {
@@ -174,8 +122,8 @@ export default function(options) {
       hot: true,
       historyApiFallback: true,
       stats: stats,
-      host: '0.0.0.0',
-      port: 4000
+      host: globals.CLIENT_HOST,
+      port: globals.CLIENT_PORT
     }
   };
 }

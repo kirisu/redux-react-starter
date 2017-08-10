@@ -1,12 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
-
 import store from './store';
-import Root from './domains/Root';
+import Root from './containers/Root';
 
-import 'normalize.css';
+const body = document.body;
 
-render(
-  React.createElement(Root, { store }),
-  document.body.appendChild(document.createElement('div'))
-);
+render(<Root store={store} />, body.appendChild(document.createElement('div')));

@@ -75,3 +75,4 @@ jspm_packages
 
 .babel.json
 dist
+flow-typed
